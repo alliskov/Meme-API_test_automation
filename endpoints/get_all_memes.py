@@ -1,44 +1,11 @@
 import requests
 import random
+import json_schemas
 from endpoints.endpoint import Endpoint
 
 
 class GetAllMemes(Endpoint):
-    response_json_schema = {
-        "type": "object",
-        "properties": {
-            "data": {
-                "type": "array",
-                "items": {
-                    "id": {"type": "integer"},
-                    "info": {
-                        "type": "object",
-                        "additionalProperties": True
-                    },
-                    "tags": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "text": {
-                        "type": "string"
-                    },
-                    "updated_by": {
-                        "type": "string"
-                    },
-                    "url": {
-                        "type": "string",
-                        "format": "uri"
-                    }
-                },
-                "required": ["id", "info", "tags", "text", "updated_by", "url"],
-                "additionalProperties": False
-            }
-        },
-        "required": ["data"],
-        "additionalProperties": False
-    }
+    response_json_schema = json_schemas.get_memes_list_response_json_schema
 
     def get_all_memes(self, token=None):
         self.headers.pop('Authorization', None)
@@ -58,5 +25,6 @@ class GetAllMemes(Endpoint):
             url=f'{self.url}/meme/{meme_id}',
             headers={'Authorization': token}
         ).json()
+        print(f'response is {self.response}')
         assert meme in self.response.json()['data'], \
             f'Failed to find meme {meme} in meme list {self.response.json()["data"]}'

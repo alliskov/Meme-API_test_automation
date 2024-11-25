@@ -1,36 +1,10 @@
 import requests
+import json_schemas
 from endpoints.endpoint import Endpoint
 
 
 class AddMeme(Endpoint):
-    response_json_schema = {
-        "type": "object",
-        "properties": {
-            "id": {"type": ["integer", "string"]},
-            "info": {
-                "type": "object",
-                "additionalProperties": True
-            },
-            "tags": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "text": {
-                "type": "string"
-            },
-            "updated_by": {
-                "type": "string"
-            },
-            "url": {
-                "type": "string",
-                "format": "uri"
-            },
-        },
-        "required": ["id", "info", "tags", "text", "updated_by", "url"],
-        "additionalProperties": False
-    }
+    response_json_schema = json_schemas.add_meme_response_json_schema
 
     def add_meme(self, payload, token=None):
         self.headers.pop('Authorization', None)
@@ -60,3 +34,20 @@ class AddMeme(Endpoint):
     def check_author_name(self, author_name):
         assert self.response.json()['updated_by'] == author_name, \
             f'Returned author name {self.response.json()["updated_by"]} while expected {author_name}'
+
+    def clear_test_data(self, meme=None):
+        meme = meme if meme else self.response
+        self.meme_id = meme.json()['id']
+        if requests.delete(url=f'{self.url}/meme/{self.meme_id}', headers=self.headers).status_code == 200:
+            print('Test data cleared successfully')
+        else:
+            print('Test data clearing failed')
+
+    def compare_payload_and_meme_data(self, meme_data=None, payload=None):
+        meme_data = meme_data if meme_data else self.response.json()
+        payload = payload if payload else self.payload
+        for item in meme_data.keys():
+            if item not in ['id', 'updated_by']:
+                print(f'Comparing {meme_data.get(item)} with {payload.get(item)}')
+                assert meme_data.get(item) == payload.get(item), \
+                    f'For key {item} returned value {meme_data.get(item)} while expected {payload.get(item)}'

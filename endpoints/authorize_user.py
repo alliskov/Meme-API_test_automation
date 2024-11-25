@@ -1,17 +1,11 @@
 import requests
+import json_schemas
 from endpoints.endpoint import Endpoint
 
 
 class AuthorizeUser(Endpoint):
     user_name = None
-    response_json_schema = {
-        "type": "object",
-        "properties": {
-            "token": {"type": "string"},
-            "user": {"type": "string"}
-        },
-        "required": ["token", "user"]
-    }
+    response_json_schema = json_schemas.authorize_response_json_schema
 
     def authorize_new_user(self, user_name):
         try:

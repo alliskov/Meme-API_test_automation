@@ -1,36 +1,10 @@
 import requests
+import json_schemas
 from endpoints.endpoint import Endpoint
 
 
 class GetOneMeme(Endpoint):
-    response_json_schema = {
-        "type": "object",
-        "properties": {
-            "id": {"type": ["integer", "string"]},
-            "info": {
-                "type": "object",
-                "additionalProperties": True
-            },
-            "tags": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "text": {
-                "type": "string"
-            },
-            "updated_by": {
-                "type": "string"
-            },
-            "url": {
-                "type": "string",
-                "format": "uri"
-            },
-        },
-        "required": ["id", "info", "tags", "text", "updated_by", "url"],
-        "additionalProperties": False
-    }
+    response_json_schema = json_schemas.get_one_meme_response_json_schema
 
     def get_one_meme(self, token=None, meme_id=None):
         self.meme_id = meme_id if meme_id else self.meme_id

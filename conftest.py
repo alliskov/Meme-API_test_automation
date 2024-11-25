@@ -4,6 +4,7 @@ import allure
 import json
 import os
 import jsonschema
+import json_schemas
 from faker import Faker
 from endpoints.authorize_user import AuthorizeUser
 from endpoints.get_token_status import GetToken
@@ -102,14 +103,14 @@ def empty_meme_id():
 
 @pytest.fixture()
 def first_user_name(authorize_user):
-    user1, user2 = authorize_user
+    user1, _ = authorize_user
     name = user1['user']
     return name
 
 
 @pytest.fixture()
 def second_user_name(authorize_user):
-    user1, user2 = authorize_user
+    _, user2 = authorize_user
     name = user2['user']
     return name
 
@@ -120,14 +121,14 @@ def first_user_token(authorize_user, request):
     if custom_token:
         token = None if custom_token == 'no_token' else custom_token
     else:
-        user1, user2 = authorize_user
+        user1, _ = authorize_user
         token = user1["token"]
     return token
 
 
 @pytest.fixture()
 def second_user_token(authorize_user):
-    user1, user2 = authorize_user
+    _, user2 = authorize_user
     token = user2["token"]
     return token
 
@@ -216,23 +217,12 @@ def new_meme(payload, add_meme_endpoint, delete_meme_endpoint, first_user_token)
 
 @pytest.fixture(scope='session')
 def read_user_config(file_name=None):
-    user_config_json_schema = {
-        "type": "array",
-        "items": {
-            "type": "object",
-            "properties": {
-                "token": {"type": "string"},
-                "user": {"type": "string"}
-            },
-            "required": ["token", "user"]
-        }
-    }
     file_name = file_name if file_name else 'user_config.json'
     user_config_file = os.path.join(os.path.dirname(__file__), 'user_config.json')
     try:
         with open(file=user_config_file, mode='r') as user_config:
             config_data = json.load(user_config)
-            jsonschema.validate(config_data, user_config_json_schema)
+            jsonschema.validate(config_data, json_schemas.user_config_json_schema)
             return config_data
     except FileNotFoundError:
         print('File not found')
