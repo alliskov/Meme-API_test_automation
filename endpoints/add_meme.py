@@ -35,14 +35,6 @@ class AddMeme(Endpoint):
         assert self.response.json()['updated_by'] == author_name, \
             f'Returned author name {self.response.json()["updated_by"]} while expected {author_name}'
 
-    def clear_test_data(self, meme=None):
-        meme = meme if meme else self.response
-        self.meme_id = meme.json()['id']
-        if requests.delete(url=f'{self.url}/meme/{self.meme_id}', headers=self.headers).status_code == 200:
-            print('Test data cleared successfully')
-        else:
-            print('Test data clearing failed')
-
     def compare_payload_and_meme_data(self, meme_data=None, payload=None):
         meme_data = meme_data if meme_data else self.response.json()
         payload = payload if payload else self.payload

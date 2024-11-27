@@ -2,40 +2,40 @@ import pytest
 import allure
 
 
-# @allure.suite('Meme API')
-# @allure.feature('User authorization')
-# @allure.story('Positive')
-# @allure.title('Authorize user with valid data')
-# @allure.severity('Critical')
-# def test_authorize_user(user_authorization_endpoint, user_name):
-#     user_authorization_endpoint.authorize_new_user(user_name)
-#     user_authorization_endpoint.check_response_status_code(200)
-#     user_authorization_endpoint.check_response_user_name(user_name)
-#     user_authorization_endpoint.check_response_json_schema()
-#
-#
-# @allure.suite('Meme API')
-# @allure.feature('User authorization')
-# @allure.story('Negative')
-# @allure.title('Authorize user with invalid data')
-# @allure.severity('Major')
-# @pytest.mark.parametrize('user_name', ['invalid'], indirect=True)
-# def test_authorize_user_with_invalid_payload(user_authorization_endpoint, user_name):
-#     user_authorization_endpoint.authorize_new_user(user_name)
-#     user_authorization_endpoint.check_response_status_code(400)
-#
-#
-# @allure.suite('Meme API')
-# @allure.feature('User authorization')
-# @allure.story('Negative')
-# @allure.title('Authorize user without any data')
-# @allure.severity('Minor')
-# @pytest.mark.parametrize('user_name', ['null'], indirect=True)
-# def test_authorize_user_without_payload(user_authorization_endpoint, user_name):
-#     user_authorization_endpoint.authorize_new_user(user_name)
-#     user_authorization_endpoint.check_response_status_code(400)
-#
-#
+@allure.suite('Meme API')
+@allure.feature('User authorization')
+@allure.story('Positive')
+@allure.title('Authorize user with valid data')
+@allure.severity('Critical')
+def test_authorize_user(user_authorization_endpoint, user_name):
+    user_authorization_endpoint.authorize_new_user(user_name)
+    user_authorization_endpoint.check_response_status_code(200)
+    user_authorization_endpoint.check_response_user_name(user_name)
+    user_authorization_endpoint.check_response_json_schema()
+
+
+@allure.suite('Meme API')
+@allure.feature('User authorization')
+@allure.story('Negative')
+@allure.title('Authorize user with invalid data')
+@allure.severity('Major')
+@pytest.mark.parametrize('user_name', ['invalid'], indirect=True)
+def test_authorize_user_with_invalid_payload(user_authorization_endpoint, user_name):
+    user_authorization_endpoint.authorize_new_user(user_name)
+    user_authorization_endpoint.check_response_status_code(400)
+
+
+@allure.suite('Meme API')
+@allure.feature('User authorization')
+@allure.story('Negative')
+@allure.title('Authorize user without any data')
+@allure.severity('Minor')
+@pytest.mark.parametrize('user_name', ['null'], indirect=True)
+def test_authorize_user_without_payload(user_authorization_endpoint, user_name):
+    user_authorization_endpoint.authorize_new_user(user_name)
+    user_authorization_endpoint.check_response_status_code(400)
+
+
 @allure.suite('Meme API')
 @allure.feature('Check token status')
 @allure.story('Positive')
@@ -240,14 +240,14 @@ def test_delete_meme_without_token(delete_meme_endpoint):
 @allure.story('Positive')
 @allure.title('Add new meme using valid data')
 @allure.severity('Critical')
-def test_add_meme(add_meme_endpoint, payload, first_user_token, first_user_name):
+def test_add_meme(add_meme_endpoint, delete_meme_endpoint, payload, first_user_token, first_user_name):
     add_meme_endpoint.add_meme(payload, first_user_token)
     add_meme_endpoint.check_response_status_code(200)
     add_meme_endpoint.check_response_json_schema()
     add_meme_endpoint.compare_payload_and_meme_data()
     add_meme_endpoint.check_meme_got_id_after_creation()
     add_meme_endpoint.check_author_name(first_user_name)
-    add_meme_endpoint.clear_test_data()
+    delete_meme_endpoint.delete_meme(first_user_token, add_meme_endpoint.meme_id)
 
 
 @allure.suite('Meme API')
