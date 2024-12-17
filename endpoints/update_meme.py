@@ -34,7 +34,8 @@ class UpdateMeme(Endpoint):
 
     def check_response_body_equal_to_payload(self, payload):
         assert self.response.json() == payload, \
-            f'Failed comparing response body and payload'
+            (f'Failed comparing response body: \n {self.response.json()} \n'
+             f'and payload: \n {payload}')
 
     def check_unauthorized_update_response_text(self):
         text = 'You are not the meme owner'
